@@ -1,0 +1,29 @@
+name: Daily Report Automation
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 毎日UTC 0時（または必要に応じて調整）
+
+jobs:
+  create_daily_report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7' # またはプロジェクトに合わせたバージョン
+
+      - name: Create Daily Report File
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          FILENAME="2023/$DATE.md"
+          echo "# 取り組んだ課題一覧\n-\n\n# わかったこと\n-\n\n# 次やること\n-\n\n# 感じたこと\n-\n\n# 学習時間\n-\n\n# 累計学習時間\n-" > $FILENAME
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add $FILENAME
+          git commit -m "Daily Report for $DATE"
+          git push
+
